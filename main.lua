@@ -1,6 +1,7 @@
 local s3dc = require("s3dc")
 
 local sensitivity = 0.5
+local speed = 500
 function love.load()
 	s3dc.load()
 	s3dc.show()
@@ -8,6 +9,7 @@ function love.load()
 
 	local font = love.graphics.newFont(60)
 	love.graphics.setFont(font)
+	love.graphics.setLineWidth(4)
 end
 
 function love.draw()
@@ -17,6 +19,7 @@ function love.draw()
 	s3dc.draw_start()
 
 	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.rectangle("line", 0, 0, height, height)
 	love.graphics.rectangle("fill", height * 0.25, height * 0.25, height / 2, height / 2)
 	love.graphics.setColor(0, 0, 0, 1)
 	love.graphics.print("FPS: " .. fps, height * 0.25, height * 0.25)
@@ -28,19 +31,27 @@ function love.draw()
 end
 
 function love.update(dt)
-	local dx = 1 * dt
+	local dx = speed * dt
 	if love.keyboard.isDown("a") then
 		s3dc.left(dx)
 	elseif love.keyboard.isDown("d") then
 		s3dc.right(dx)
-	elseif love.keyboard.isDown("w") then
+	end
+	if love.keyboard.isDown("w") then
 		s3dc.forward(dx)
 	elseif love.keyboard.isDown("s") then
 		s3dc.back(dx)
-	elseif love.keyboard.isDown("lshift") then
+	end
+	if love.keyboard.isDown("lshift") then
 		s3dc.down(dx)
 	elseif love.keyboard.isDown("space") then
 		s3dc.up(dx)
+	end
+end
+
+function love.keypressed(key)
+	if key == "escape" then
+		s3dc.show()
 	end
 end
 
