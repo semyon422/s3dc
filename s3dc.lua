@@ -1,14 +1,10 @@
 local s3dc = {}
 
 local shader_code = [[
-	extern mat4 model, projection, inv_translate, inv_rotate_y, inv_rotate_x;
+	extern mat4 projection, inv_translate, inv_rotate_y, inv_rotate_x;
 	vec4 position(mat4 transform_projection, vec4 vertex_position)
 	{
-		return TransformMatrix * vertex_position * model * inv_translate * inv_rotate_y * inv_rotate_x * projection;
-	}
-	vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords)
-	{
-		return texture2D(texture, texture_coords) * color;
+		return TransformMatrix * vertex_position * inv_translate * inv_rotate_y * inv_rotate_x * projection;
 	}
 ]]
 
@@ -56,21 +52,20 @@ local function norm(out, a)
 end
 
 local shader, transform
-local model, projection, inv_translate, inv_rotate_y, inv_rotate_x
+local projection, inv_translate, inv_rotate_y, inv_rotate_x
 function s3dc.load()
 	s3dc.pos = {0, 0, 0}
 	s3dc.angle = {pitch = 0, yaw = 0}
 	s3dc.top = {0, 1, 0}
 	s3dc.front = {0, 0, 1}
 	s3dc.fov = 70
-	s3dc.near = 0.01
-	s3dc.far = 10
+	s3dc.near = 10
+	s3dc.far = 10000
 
 	shader = shader or love.graphics.newShader(shader_code)
 	transform = transform or love.math.newTransform()
 	transform:reset()
 
-	model = identity()
 	projection = identity()
 	inv_translate = identity()
 	inv_rotate_y = identity()
@@ -82,9 +77,9 @@ end
 function s3dc.show()
 	local width, height = love.graphics.getDimensions()
 	s3dc.pos = {
-		width / height / 2,
-		1 / 2,
-		1 / 2 / math.tan(math.rad(s3dc.fov / 2))
+		width / 2,
+		height / 2,
+		height / 2 / math.tan(math.rad(s3dc.fov / 2))
 	}
 	s3dc.angle = {
 		pitch = 0,
@@ -139,14 +134,13 @@ function s3dc.draw_start()
 	inv_rotate_y_mat4()
 	inv_rotate_x_mat4()
 
-	shader:send("model", model)
 	shader:send("projection", projection)
 	shader:send("inv_translate", inv_translate)
 	shader:send("inv_rotate_y", inv_rotate_y)
 	shader:send("inv_rotate_x", inv_rotate_x)
 
 	love.graphics.setShader(shader)
-	transform:setTransformation(0, 1, 0, 1 / height, -1 / height)
+	transform:setTransformation(0, height, 0, 1, -1)
 	love.graphics.replaceTransform(transform)
 end
 
