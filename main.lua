@@ -53,8 +53,12 @@ function love.update(dt)
 end
 
 function love.keypressed(key)
-	if key == "escape" then
-		s3dc.show()
+	if key == "1" then
+		s3dc.show(0, 0, width, height)
+	elseif key == "2" then
+		s3dc.show(height * 0.25, -height * 0.25, width, height)
+	elseif key == "3" then
+		s3dc.show(height * 0.25, height * 0.25, width / 2, height / 2)
 	end
 end
 
