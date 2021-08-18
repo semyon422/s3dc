@@ -2,9 +2,15 @@ local s3dc = {}
 
 local shader_code = [[
 	extern mat4 projection, inv_translate, inv_rotate_y, inv_rotate_x;
+	extern bool is_canvas;
 	vec4 position(mat4 transform_projection, vec4 vertex_position)
 	{
-		return TransformMatrix * vertex_position * inv_translate * inv_rotate_y * inv_rotate_x * projection;
+		vec4 pos = TransformMatrix * vertex_position * inv_translate * inv_rotate_y * inv_rotate_x * projection;
+		if (is_canvas)
+		{
+			pos.y *= -1;
+		}
+		return pos;
 	}
 ]]
 
@@ -124,6 +130,7 @@ function s3dc.draw_start()
 	s3dc.draw_update()
 
 	love.graphics.setShader(shader)
+	shader:send("is_canvas", love.graphics.getCanvas() ~= nil)
 end
 
 function s3dc.draw_end()
