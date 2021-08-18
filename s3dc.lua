@@ -17,16 +17,13 @@ local function identity()
 	}
 end
 
-local tmp_vec3 = {}
-
-local cross_tmp = {}
 local function cross(out, a, b)
-	cross_tmp[1] = a[2] * b[3] - a[3] * b[2]
-	cross_tmp[2] = a[3] * b[1] - a[1] * b[3]
-	cross_tmp[3] = a[1] * b[2] - a[2] * b[1]
-	out[1] = cross_tmp[1]
-	out[2] = cross_tmp[2]
-	out[3] = cross_tmp[3]
+	local x = a[2] * b[3] - a[3] * b[2]
+	local y = a[3] * b[1] - a[1] * b[3]
+	local z = a[1] * b[2] - a[2] * b[1]
+	out[1] = x
+	out[2] = y
+	out[3] = z
 end
 
 local function mul(out, a, b)
@@ -43,12 +40,7 @@ end
 
 local function norm(out, a)
 	local k = math.sqrt(a[1] ^ 2 + a[2] ^ 2 + a[3] ^ 2)
-
-	if k ~= 0 then
-		out[1] = a[1] / k
-		out[2] = a[2] / k
-		out[3] = a[3] / k
-	end
+	return mul(out, a, k == 0 and 0 or 1 / k)
 end
 
 local shader, transform
@@ -58,7 +50,7 @@ function s3dc.load()
 	s3dc.angle = {pitch = 0, yaw = 0}
 	s3dc.top = {0, 1, 0}
 	s3dc.front = {0, 0, 1}
-	s3dc.fov = 70
+	s3dc.fov = math.rad(70)
 	s3dc.near = 10
 	s3dc.far = 10000
 
@@ -74,17 +66,15 @@ function s3dc.load()
 	s3dc.rotate(0, 0)
 end
 
-function s3dc.show()
-	local width, height = love.graphics.getDimensions()
-	s3dc.pos = {
-		width / 2,
-		height / 2,
-		height / 2 / math.tan(math.rad(s3dc.fov / 2))
-	}
-	s3dc.angle = {
-		pitch = 0,
-		yaw = 0
-	}
+function s3dc.show(x, y, w, h)
+	local pos = s3dc.pos
+	pos[1] = x + w / 2
+	pos[2] = y + h / 2
+	pos[3] = h / 2 / math.tan(s3dc.fov / 2)
+
+	local angle = s3dc.angle
+	angle.pitch = 0
+	angle.yaw = 0
 end
 
 local function inv_translate_mat4()
@@ -117,7 +107,7 @@ local function from_perspective(fovy, aspect, near, far)
 	assert(aspect ~= 0)
 	assert(near ~= far)
 
-	local t = math.tan(math.rad(fovy) / 2)
+	local t = math.tan(fovy / 2)
 	projection[1] = 1 / (t * aspect)
 	projection[6] = 1 / t
 	projection[11] = -(far + near) / (far - near)
@@ -126,7 +116,11 @@ local function from_perspective(fovy, aspect, near, far)
 	projection[16] = 0
 end
 
+local drawing = false
 function s3dc.draw_start()
+	assert(not drawing, "Calling s3dc.draw_start() twice")
+	drawing = true
+
 	local width, height = love.graphics.getDimensions()
 
 	from_perspective(s3dc.fov, width / height, s3dc.near, s3dc.far)
@@ -145,6 +139,8 @@ function s3dc.draw_start()
 end
 
 function s3dc.draw_end()
+	assert(drawing, "Calling s3dc.draw_end() twice")
+	drawing = false
 	love.graphics.setShader()
 	love.graphics.origin()
 end
@@ -158,14 +154,17 @@ end
 
 function s3dc.rotate(dx, dy)
 	local angle = s3dc.angle
-	angle.yaw = angle.yaw - math.rad(dx)  -- rotation about the Y axis
-	angle.pitch = angle.pitch - math.rad(dy)  -- rotation about the X axis
+	angle.yaw = angle.yaw - dx  -- rotation about the Y axis
+	angle.pitch = angle.pitch - dy  -- rotation about the X axis
 
-	s3dc.front[1] = -math.sin(angle.yaw) * math.cos(angle.pitch)
-	s3dc.front[2] = math.sin(angle.pitch)
-	s3dc.front[3] = -math.cos(angle.yaw) * math.cos(angle.pitch)
-	norm(s3dc.front, s3dc.front)
+	local front = s3dc.front
+	front[1] = -math.sin(angle.yaw) * math.cos(angle.pitch)
+	front[2] = math.sin(angle.pitch)
+	front[3] = -math.cos(angle.yaw) * math.cos(angle.pitch)
+	norm(front, front)
 end
+
+local tmp_vec3 = {}
 
 function s3dc.forward(delta)
 	mul(tmp_vec3, s3dc.front, delta)
@@ -188,15 +187,15 @@ function s3dc.up(delta)
 end
 
 function s3dc.back(delta)
-	s3dc.forward(-delta)
+	return s3dc.forward(-delta)
 end
 
 function s3dc.left(delta)
-	s3dc.right(-delta)
+	return s3dc.right(-delta)
 end
 
 function s3dc.down(delta)
-	s3dc.up(-delta)
+	return s3dc.up(-delta)
 end
 
 return s3dc

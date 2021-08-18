@@ -2,9 +2,12 @@ local s3dc = require("s3dc")
 
 local sensitivity = 0.5
 local speed = 500
+local width, height
 function love.load()
+	width, height = love.graphics.getDimensions()
+
 	s3dc.load()
-	s3dc.show()
+	s3dc.show(0, 0, width, height)
 	s3dc.angle.yaw = math.pi / 4
 
 	local font = love.graphics.newFont(60)
@@ -13,7 +16,7 @@ function love.load()
 end
 
 function love.draw()
-	local width, height = love.graphics.getDimensions()
+	width, height = love.graphics.getDimensions()
 	local fps = love.timer.getFPS()
 
 	s3dc.draw_start()
@@ -68,7 +71,7 @@ end
 
 function love.mousemoved(x, y, dx, dy)
 	if dragging then
-		s3dc.rotate(dx * sensitivity, dy * sensitivity)
+		s3dc.rotate(math.rad(dx) * sensitivity, math.rad(dy) * sensitivity)
 	end
 end
 
