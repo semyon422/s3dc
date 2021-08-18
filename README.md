@@ -10,10 +10,10 @@ A simple 3D FPS camera that expands the capabilities of a 2D framework. 200 line
 ### The library provides the following functions:
 
 #### s3dc.load()
-Creates camera state, `Shader` and `Transform`. It is enough to call once.
+Creates camera state and `Shader`. It is enough to call once.
 
 #### s3dc.show(x, y, w, h)
-Moves the camera in front of the specified area of the screen. Note that the origin is in the lower left corner.
+Moves the camera in front of the specified area of the screen.
 ```lua
 s3dc.show(0, 0, love.graphics.getDimensions())  -- Default rendering area of love2d.
 ```
@@ -43,10 +43,10 @@ Camera position.
 #### s3dc.angle = {pitch = 0, yaw = 0}
 Camera angle.
 
-#### s3dc.top = {0, 1, 0}
+#### s3dc.top = {0, -1, 0}
 Upward direction, used when moving.
 
-#### s3dc.front = {0, 0, -1}
+#### s3dc.front = {0, 0, 1}
 The direction of your view, used when moving. Depends on yaw and pitch.
 
 #### s3dc.fov = math.rad(70)

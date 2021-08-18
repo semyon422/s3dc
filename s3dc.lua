@@ -43,20 +43,18 @@ local function norm(out, a)
 	return mul(out, a, k == 0 and 0 or 1 / k)
 end
 
-local shader, transform
+local shader
 local projection, inv_translate, inv_rotate_y, inv_rotate_x
 function s3dc.load()
 	s3dc.pos = {0, 0, 0}
 	s3dc.angle = {pitch = 0, yaw = 0}
-	s3dc.top = {0, 1, 0}
-	s3dc.front = {0, 0, -1}
+	s3dc.top = {0, -1, 0}
+	s3dc.front = {0, 0, 1}
 	s3dc.fov = math.rad(70)
 	s3dc.near = 10
 	s3dc.far = 10000
 
 	shader = shader or love.graphics.newShader(shader_code)
-	transform = transform or love.math.newTransform()
-	transform:reset()
 
 	projection = identity()
 	inv_translate = identity()
@@ -70,7 +68,7 @@ function s3dc.show(x, y, w, h)
 	local pos = s3dc.pos
 	pos[1] = x + w / 2
 	pos[2] = y + h / 2
-	pos[3] = h / 2 / math.tan(s3dc.fov / 2)
+	pos[3] = -h / 2 / math.tan(s3dc.fov / 2)
 
 	local angle = s3dc.angle
 	angle.pitch = 0
@@ -109,10 +107,10 @@ local function from_perspective(fovy, aspect, near, far)
 
 	local t = math.tan(fovy / 2)
 	projection[1] = 1 / (t * aspect)
-	projection[6] = 1 / t
+	projection[6] = -1 / t
 	projection[11] = -(far + near) / (far - near)
-	projection[12] = -1
-	projection[15] = -(2 * far * near) / (far - near)
+	projection[12] = 1
+	projection[15] = (2 * far * near) / (far - near)
 	projection[16] = 0
 end
 
@@ -126,15 +124,12 @@ function s3dc.draw_start()
 	s3dc.draw_update()
 
 	love.graphics.setShader(shader)
-	transform:setTransformation(0, height, 0, 1, -1)
-	love.graphics.replaceTransform(transform)
 end
 
 function s3dc.draw_end()
 	assert(drawing, "Calling s3dc.draw_end() twice")
 	drawing = false
 	love.graphics.setShader()
-	love.graphics.origin()
 end
 
 function s3dc.draw_update()
@@ -162,9 +157,9 @@ function s3dc.rotate(dx, dy)
 	angle.pitch = angle.pitch + dy  -- rotation about the X axis
 
 	local front = s3dc.front
-	front[1] = -math.sin(angle.yaw) * math.cos(angle.pitch)
-	front[2] = math.sin(angle.pitch)
-	front[3] = -math.cos(angle.yaw) * math.cos(angle.pitch)
+	front[1] = math.sin(angle.yaw) * math.cos(angle.pitch)
+	front[2] = -math.sin(angle.pitch)
+	front[3] = math.cos(angle.yaw) * math.cos(angle.pitch)
 	norm(front, front)
 end
 

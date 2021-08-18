@@ -8,7 +8,7 @@ function love.load()
 
 	s3dc.load()
 	s3dc.show(0, 0, width, height)
-	s3dc.angle.yaw = math.pi / 4
+	s3dc.angle.yaw = -math.pi / 4
 
 	local font = love.graphics.newFont(60)
 	love.graphics.setFont(font)
@@ -56,7 +56,7 @@ function love.keypressed(key)
 	if key == "1" then
 		s3dc.show(0, 0, width, height)
 	elseif key == "2" then
-		s3dc.show(height * 0.25, -height * 0.25, width, height)
+		s3dc.show(height * 0.25, height * 0.25, width, height)
 	elseif key == "3" then
 		s3dc.show(height * 0.25, height * 0.25, width / 2, height / 2)
 	end
@@ -75,7 +75,7 @@ end
 
 function love.mousemoved(x, y, dx, dy)
 	if dragging then
-		s3dc.rotate(math.rad(-dx) * sensitivity, math.rad(-dy) * sensitivity)
+		s3dc.rotate(math.rad(dx) * sensitivity, math.rad(-dy) * sensitivity)
 	end
 end
 
