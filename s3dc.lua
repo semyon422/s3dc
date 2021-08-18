@@ -49,7 +49,7 @@ function s3dc.load()
 	s3dc.pos = {0, 0, 0}
 	s3dc.angle = {pitch = 0, yaw = 0}
 	s3dc.top = {0, 1, 0}
-	s3dc.front = {0, 0, 1}
+	s3dc.front = {0, 0, -1}
 	s3dc.fov = math.rad(70)
 	s3dc.near = 10
 	s3dc.far = 10000
