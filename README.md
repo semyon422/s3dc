@@ -31,7 +31,7 @@ Updates internal transformation matrices and sends them to the shader. Called on
 Moves the position of the camera.
 
 #### s3dc.rotate(dx, dy)
-Rotates the camera at `dx` about the y-axis (yaw, left-right), at `dy` about the x-axis (pitch, up-down).
+Rotates the camera at `dx` about the x-axis (pitch, up-down), at `dy` about the y-axis (yaw, left-right).
 
 #### s3dc.forward(delta) (also backward, left, right, up, down)
 Move in the specified direction by `delta` units.
