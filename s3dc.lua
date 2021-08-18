@@ -117,21 +117,13 @@ local function from_perspective(fovy, aspect, near, far)
 end
 
 local drawing = false
+local width, height
 function s3dc.draw_start()
 	assert(not drawing, "Calling s3dc.draw_start() twice")
 	drawing = true
 
-	local width, height = love.graphics.getDimensions()
-
-	from_perspective(s3dc.fov, width / height, s3dc.near, s3dc.far)
-	inv_translate_mat4()
-	inv_rotate_y_mat4()
-	inv_rotate_x_mat4()
-
-	shader:send("projection", projection)
-	shader:send("inv_translate", inv_translate)
-	shader:send("inv_rotate_y", inv_rotate_y)
-	shader:send("inv_rotate_x", inv_rotate_x)
+	width, height = love.graphics.getDimensions()
+	s3dc.draw_update()
 
 	love.graphics.setShader(shader)
 	transform:setTransformation(0, height, 0, 1, -1)
@@ -143,6 +135,18 @@ function s3dc.draw_end()
 	drawing = false
 	love.graphics.setShader()
 	love.graphics.origin()
+end
+
+function s3dc.draw_update()
+	from_perspective(s3dc.fov, width / height, s3dc.near, s3dc.far)
+	inv_translate_mat4()
+	inv_rotate_y_mat4()
+	inv_rotate_x_mat4()
+
+	shader:send("projection", projection)
+	shader:send("inv_translate", inv_translate)
+	shader:send("inv_rotate_y", inv_rotate_y)
+	shader:send("inv_rotate_x", inv_rotate_x)
 end
 
 function s3dc.translate(dx, dy, dz)
