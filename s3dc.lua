@@ -161,10 +161,10 @@ function s3dc.rotate(dx, dy)
 	angle.yaw = angle.yaw - math.rad(dx)  -- rotation about the Y axis
 	angle.pitch = angle.pitch - math.rad(dy)  -- rotation about the X axis
 
-    s3dc.front[1] = -math.sin(angle.yaw) * math.cos(angle.pitch)
-    s3dc.front[2] = math.sin(angle.pitch)
-    s3dc.front[3] = -math.cos(angle.yaw) * math.cos(angle.pitch)
-    norm(s3dc.front, s3dc.front)
+	s3dc.front[1] = -math.sin(angle.yaw) * math.cos(angle.pitch)
+	s3dc.front[2] = math.sin(angle.pitch)
+	s3dc.front[3] = -math.cos(angle.yaw) * math.cos(angle.pitch)
+	norm(s3dc.front, s3dc.front)
 end
 
 function s3dc.forward(delta)
