@@ -186,7 +186,7 @@ function s3dc.up(delta)
 	add(s3dc.pos, s3dc.pos, tmp_vec3)
 end
 
-function s3dc.back(delta)
+function s3dc.backward(delta)
 	return s3dc.forward(-delta)
 end
 

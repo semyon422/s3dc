@@ -43,7 +43,7 @@ function love.update(dt)
 	if love.keyboard.isDown("w") then
 		s3dc.forward(dx)
 	elseif love.keyboard.isDown("s") then
-		s3dc.back(dx)
+		s3dc.backward(dx)
 	end
 	if love.keyboard.isDown("lshift") then
 		s3dc.down(dx)
