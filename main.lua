@@ -75,7 +75,7 @@ end
 
 function love.mousemoved(x, y, dx, dy)
 	if dragging then
-		s3dc.rotate(math.rad(dx) * sensitivity, math.rad(-dy) * sensitivity)
+		s3dc.rotate(math.rad(-dy) * sensitivity, math.rad(dx) * sensitivity)
 	end
 end
 
