@@ -154,8 +154,8 @@ end
 
 function s3dc.rotate(dx, dy)
 	local angle = s3dc.angle
-	angle.yaw = angle.yaw - dx  -- rotation about the Y axis
-	angle.pitch = angle.pitch - dy  -- rotation about the X axis
+	angle.yaw = angle.yaw + dx  -- rotation about the Y axis
+	angle.pitch = angle.pitch + dy  -- rotation about the X axis
 
 	local front = s3dc.front
 	front[1] = -math.sin(angle.yaw) * math.cos(angle.pitch)

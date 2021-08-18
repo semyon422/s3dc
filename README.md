@@ -28,7 +28,7 @@ Turns off camera mode. Disables shader and resets the current coordinate transfo
 Moves the position of the camera.
 
 #### s3dc.rotate(dx, dy)
-Rotates the camera at -dx about the y-axis (yaw, left-right), at -dy about the x-axis (pitch, up-down).
+Rotates the camera at dx about the y-axis (yaw, left-right), at dy about the x-axis (pitch, up-down).
 
 #### s3dc.forward(delta) (also backward, left, right, up, down)
 Move in the specified direction by delta units.
