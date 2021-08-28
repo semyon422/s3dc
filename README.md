@@ -19,10 +19,10 @@ s3dc.show(0, 0, love.graphics.getDimensions())  -- Default rendering area of lov
 ```
 
 #### s3dc.draw_start()
-Turns on camera mode. Sets vertex shader and replaces transform. Calling twice in a row will throw an error.
+Turns on camera mode. Sets vertex shader. Calling twice in a row will throw an error.
 
 #### s3dc.draw_end()
-Turns off camera mode. Disables shader and resets the current coordinate transformation. Calling twice in a row will throw an error.
+Turns off camera mode. Disables shader. Calling twice in a row will throw an error.
 
 #### s3dc.draw_update()
 Updates internal transformation matrices and sends them to the shader. Called once in `draw_start`. If a camera is changed between `draw_start` and `draw_end`, `draw_update` should be called manually to apply the changes.
